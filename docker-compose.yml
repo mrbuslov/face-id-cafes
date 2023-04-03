@@ -1,0 +1,22 @@
+name: "face-id"
+
+services:
+  server:
+    build:
+      dockerfile: containers/server/Dockerfile
+    command: >
+      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend:/var/backend
+      - static_volume:/var/backend/static
+
+  webrtc-redis-server:
+    image: "redis:alpine"
+
+    
+volumes:
+  static_volume:
