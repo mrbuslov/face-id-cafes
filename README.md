@@ -1,3 +1,6 @@
+# Server
+- **RUN** - `uvicorn src.main:app --reload --port 80` (you have to be in backend folder)
+
 # Linters
 
 ***Note***: if you want to run linters, go to directory - it can be either *backend* or *frontend*  
