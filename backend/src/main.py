@@ -98,13 +98,14 @@ class VideoTransformTrack(MediaStreamTrack):
             return new_frame
         elif self.transform == "cv":
             img = frame.to_ndarray(format="bgr24")
-            face = faces.detectMultiScale(img, 1.1, 19)
+            # face = faces.detectMultiScale(img, 1.1, 19)
+            face = faces.detectMultiScale(img, scaleFactor=1.5, minNeighbors=1) # higher speed, worse quality
             for (x, y, w, h) in face:
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-            eye = eyes.detectMultiScale(img, 1.1, 19)
-            for (x, y, w, h) in eye:
-                cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            # eye = eyes.detectMultiScale(img, 1.1, 19)
+            # for (x, y, w, h) in eye:
+            #     cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
             # smile = smiles.detectMultiScale(img, 1.1, 19)
             # for (x, y, w, h) in smile:
