@@ -1,6 +1,5 @@
 // get DOM elements
-var dataChannelLog = document.getElementById('data-channel'),
-    iceConnectionLog = document.getElementById('ice-connection-state'),
+var iceConnectionLog = document.getElementById('ice-connection-state'),
     iceGatheringLog = document.getElementById('ice-gathering-state'),
     signalingLog = document.getElementById('signaling-state');
 
@@ -14,10 +13,6 @@ function createPeerConnection() {
     var config = {
         sdpSemantics: 'unified-plan'
     };
-
-    if (document.getElementById('use-stun').checked) {
-        config.iceServers = [{urls: ['stun:stun.l.google.com:19302']}];
-    }
 
     pc = new RTCPeerConnection(config);
 
@@ -70,22 +65,15 @@ function negotiate() {
         var offer = pc.localDescription;
         var codec;
 
-        codec = document.getElementById('audio-codec').value;
-        if (codec !== 'default') {
-            offer.sdp = sdpFilterCodec('audio', codec, offer.sdp);
-        }
-
-        codec = document.getElementById('video-codec').value;
-        if (codec !== 'default') {
-            offer.sdp = sdpFilterCodec('video', codec, offer.sdp);
-        }
+        // it can be optional
+        offer.sdp = sdpFilterCodec('video', 'VP8/90000', offer.sdp);
 
         document.getElementById('offer-sdp').textContent = offer.sdp;
         return fetch('/offer', {
             body: JSON.stringify({
                 sdp: offer.sdp,
                 type: offer.type,
-                video_transform: document.getElementById('video-transform').value
+                unique_id: Date.now().toString(36) + Math.random().toString(36).substr(2)
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -118,54 +106,41 @@ function start() {
         }
     }
 
-    if (document.getElementById('use-datachannel').checked) {
-        var parameters = JSON.parse(document.getElementById('datachannel-parameters').value);
+    // {"ordered": false, "maxRetransmits": 0}
+    // {"ordered": false, "maxPacketLifetime": 500}
+    var parameters = {"ordered": true}; 
 
-        dc = pc.createDataChannel('chat', parameters);
-        dc.onclose = function() {
-            clearInterval(dcInterval);
-            dataChannelLog.textContent += '- close\n';
-        };
-        dc.onopen = function() {
-            dataChannelLog.textContent += '- open\n';
-            dcInterval = setInterval(function() {
-                var message = 'ping ' + current_stamp();
-                dataChannelLog.textContent += '> ' + message + '\n';
-                dc.send(message);
-            }, 1000);
-        };
-        dc.onmessage = function(evt) {
-            dataChannelLog.textContent += '< ' + evt.data + '\n';
-
-            if (evt.data.substring(0, 4) === 'pong') {
-                var elapsed_ms = current_stamp() - parseInt(evt.data.substring(5), 10);
-                dataChannelLog.textContent += ' RTT ' + elapsed_ms + ' ms\n';
-            }
-        };
-    }
-
-    var constraints = {
-        audio: document.getElementById('use-audio').checked,
-        video: false
+    dc = pc.createDataChannel('chat', parameters);
+    dc.onclose = function() {
+        clearInterval(dcInterval);
+    };
+    dc.onopen = function() {
+        dcInterval = setInterval(function() {
+            var message = 'ping ' + current_stamp();
+            dc.send(message);
+        }, 1000);
+    };
+    dc.onmessage = function(evt) {
+        if (evt.data.substring(0, 4) === 'pong') {
+            var elapsed_ms = current_stamp() - parseInt(evt.data.substring(5), 10);
+        }
     };
 
-    if (document.getElementById('use-video').checked) {
-        var resolution = document.getElementById('video-resolution').value;
-        if (resolution) {
-            resolution = resolution.split('x');
-            constraints.video = {
-                width: parseInt(resolution[0], 0),
-                height: parseInt(resolution[1], 0)
-            };
-        } else {
-            constraints.video = true;
+    var constraints = {
+        audio: false,
+        video: {
+            width: 1280,
+            height: 720,
+            frameRate: {
+                "max": "0.1"
+            }
         }
-    }
+        // video: false,
+    };
 
+    
     if (constraints.audio || constraints.video) {
-        if (constraints.video) {
-            document.getElementById('media').style.display = 'block';
-        }
+        document.getElementById('media').style.display = 'block';
         navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
             stream.getTracks().forEach(function(track) {
                 pc.addTrack(track, stream);
