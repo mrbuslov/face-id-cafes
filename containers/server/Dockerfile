@@ -12,4 +12,4 @@ RUN apt-get update \
 
 COPY backend .
 
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
+CMD ["uvicorn", "src.application:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
