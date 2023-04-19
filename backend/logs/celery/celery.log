@@ -153,3 +153,13 @@ Trying again in 2.00 seconds... (1/100)
 [2023-04-19 17:13:40,606: INFO/MainProcess] mingle: all alone
 [2023-04-19 17:13:40,615: INFO/MainProcess] celery@ed8b8138afc4 ready.
 [2023-04-19 17:13:44,177: INFO/MainProcess] Events of group {task} enabled by remote.
+[2023-04-19 17:21:45,023: INFO/MainProcess] Connected to redis://redis:6379/0
+[2023-04-19 17:21:45,026: INFO/MainProcess] mingle: searching for neighbors
+[2023-04-19 17:21:46,033: INFO/MainProcess] mingle: all alone
+[2023-04-19 17:21:46,041: INFO/MainProcess] celery@ed8b8138afc4 ready.
+[2023-04-19 17:21:50,720: INFO/MainProcess] Events of group {task} enabled by remote.
+[2023-04-19 17:34:18,702: INFO/MainProcess] Connected to redis://redis:6379/0
+[2023-04-19 17:34:18,704: INFO/MainProcess] mingle: searching for neighbors
+[2023-04-19 17:34:19,711: INFO/MainProcess] mingle: all alone
+[2023-04-19 17:34:19,719: INFO/MainProcess] celery@affb765d9cf1 ready.
+[2023-04-19 17:34:23,799: INFO/MainProcess] Events of group {task} enabled by remote.

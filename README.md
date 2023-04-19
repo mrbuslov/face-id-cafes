@@ -1,5 +1,5 @@
 # Server
-- **RUN** - `uvicorn src.main:app --reload --port 80` (you have to be in backend folder)
+- **RUN** - `uvicorn src.application:app --reload --port 80` (you have to be in backend folder)
 
 # Linters
 

@@ -132,7 +132,7 @@ function start() {
             width: 1280,
             height: 720,
             frameRate: {
-                "max": "0.1"
+                "max": "0.5"
             }
         }
         // video: false,
