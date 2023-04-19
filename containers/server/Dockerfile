@@ -11,5 +11,3 @@ RUN apt-get update \
     && pip install -r requirements.txt 
 
 COPY backend .
-
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "80", "--reload"]

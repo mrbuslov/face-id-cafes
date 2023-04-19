@@ -27,10 +27,9 @@ class VideoTransformTrack(MediaStreamTrack):
         self.track = track
         self.transform = transform
 
-
     async def recv(self):
         frame = await self.track.recv()
-        
+
         img = frame.to_ndarray(format="bgr24")
         # https://stackoverflow.com/a/55628240
         face = faces.detectMultiScale(img, 1.1, 6)
@@ -46,7 +45,6 @@ class VideoTransformTrack(MediaStreamTrack):
 
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
-
 
 
 async def offer(params: Offer):
@@ -65,14 +63,12 @@ async def offer(params: Offer):
             await pc.close()
             pcs.discard(pc)
 
-
     @pc.on("track")
     def on_track(track):
         if track.kind == "video":
             pc.addTrack(
                 VideoTransformTrack(relay.subscribe(track), transform=params.video_transform)
             )
-
 
         @track.on("ended")
         async def on_ended():

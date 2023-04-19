@@ -1,0 +1,155 @@
+[2023-04-19 16:41:56,771: INFO/MainProcess] Connected to redis://redis:6379/0
+[2023-04-19 16:41:56,774: INFO/MainProcess] mingle: searching for neighbors
+[2023-04-19 16:41:57,793: INFO/MainProcess] mingle: all alone
+[2023-04-19 16:41:57,936: INFO/MainProcess] celery@2d075148f2cb ready.
+[2023-04-19 16:42:01,447: INFO/MainProcess] Events of group {task} enabled by remote.
+[2023-04-19 16:43:49,916: WARNING/MainProcess] consumer: Connection to broker lost. Trying to re-establish the connection...
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 332, in start
+    blueprint.start(self)
+  File "/usr/local/lib/python3.10/site-packages/celery/bootsteps.py", line 116, in start
+    step.start(parent)
+  File "/usr/local/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 628, in start
+    c.loop(*c.loop_args())
+  File "/usr/local/lib/python3.10/site-packages/celery/worker/loops.py", line 97, in asynloop
+    next(loop)
+  File "/usr/local/lib/python3.10/site-packages/kombu/asynchronous/hub.py", line 362, in create_loop
+    cb(*cbargs)
+  File "/usr/local/lib/python3.10/site-packages/kombu/transport/redis.py", line 1326, in on_readable
+    self.cycle.on_readable(fileno)
+  File "/usr/local/lib/python3.10/site-packages/kombu/transport/redis.py", line 562, in on_readable
+    chan.handlers[type]()
+  File "/usr/local/lib/python3.10/site-packages/kombu/transport/redis.py", line 906, in _receive
+    ret.append(self._receive_one(c))
+  File "/usr/local/lib/python3.10/site-packages/kombu/transport/redis.py", line 916, in _receive_one
+    response = c.parse_response()
+  File "/usr/local/lib/python3.10/site-packages/redis/client.py", line 1531, in parse_response
+    response = self._execute(conn, try_read)
+  File "/usr/local/lib/python3.10/site-packages/redis/client.py", line 1507, in _execute
+    return conn.retry.call_with_retry(
+  File "/usr/local/lib/python3.10/site-packages/redis/retry.py", line 49, in call_with_retry
+    fail(error)
+  File "/usr/local/lib/python3.10/site-packages/redis/client.py", line 1509, in <lambda>
+    lambda error: self._disconnect_raise_connect(conn, error),
+  File "/usr/local/lib/python3.10/site-packages/redis/client.py", line 1496, in _disconnect_raise_connect
+    raise error
+  File "/usr/local/lib/python3.10/site-packages/redis/retry.py", line 46, in call_with_retry
+    return do()
+  File "/usr/local/lib/python3.10/site-packages/redis/client.py", line 1508, in <lambda>
+    lambda: command(*args, **kwargs),
+  File "/usr/local/lib/python3.10/site-packages/redis/client.py", line 1529, in try_read
+    return conn.read_response()
+  File "/usr/local/lib/python3.10/site-packages/redis/connection.py", line 865, in read_response
+    response = self._parser.read_response(disable_decoding=disable_decoding)
+  File "/usr/local/lib/python3.10/site-packages/redis/connection.py", line 346, in read_response
+    result = self._read_response(disable_decoding=disable_decoding)
+  File "/usr/local/lib/python3.10/site-packages/redis/connection.py", line 356, in _read_response
+    raw = self._buffer.readline()
+  File "/usr/local/lib/python3.10/site-packages/redis/connection.py", line 259, in readline
+    self._read_from_socket()
+  File "/usr/local/lib/python3.10/site-packages/redis/connection.py", line 212, in _read_from_socket
+    raise ConnectionError(SERVER_CLOSED_CONNECTION_ERROR)
+redis.exceptions.ConnectionError: Connection closed by server.
+[2023-04-19 16:43:49,928: WARNING/MainProcess] /usr/local/lib/python3.10/site-packages/celery/worker/consumer/consumer.py:367: CPendingDeprecationWarning: 
+In Celery 5.1 we introduced an optional breaking change which
+on connection loss cancels all currently executed tasks with late acknowledgement enabled.
+These tasks cannot be acknowledged as the connection is gone, and the tasks are automatically redelivered back to the queue.
+You can enable this behavior using the worker_cancel_long_running_tasks_on_connection_loss setting.
+In Celery 5.1 it is set to False by default. The setting will be set to True by default in Celery 6.0.
+
+  warnings.warn(CANCEL_TASKS_BY_DEFAULT, CPendingDeprecationWarning)
+
+[2023-04-19 16:43:54,386: INFO/MainProcess] Connected to redis://redis:6379/0
+[2023-04-19 16:43:54,422: INFO/MainProcess] mingle: searching for neighbors
+[2023-04-19 16:43:55,451: INFO/MainProcess] mingle: all alone
+[2023-04-19 16:43:55,462: INFO/MainProcess] celery@2d075148f2cb ready.
+[2023-04-19 16:43:59,588: INFO/MainProcess] Events of group {task} enabled by remote.
+[2023-04-19 16:48:43,866: INFO/MainProcess] Connected to redis://redis:6379/0
+[2023-04-19 16:48:43,875: INFO/MainProcess] mingle: searching for neighbors
+[2023-04-19 16:48:44,892: INFO/MainProcess] mingle: all alone
+[2023-04-19 16:48:44,901: INFO/MainProcess] celery@fcbcc3071182 ready.
+[2023-04-19 16:48:48,581: INFO/MainProcess] Events of group {task} enabled by remote.
+[2023-04-19 16:49:40,687: INFO/MainProcess] Connected to redis://redis:6379/0
+[2023-04-19 16:49:40,691: INFO/MainProcess] mingle: searching for neighbors
+[2023-04-19 16:49:41,700: INFO/MainProcess] mingle: all alone
+[2023-04-19 16:49:41,730: INFO/MainProcess] celery@ca38c8db929a ready.
+[2023-04-19 16:49:45,870: INFO/MainProcess] Events of group {task} enabled by remote.
+[2023-04-19 16:51:39,765: INFO/MainProcess] Connected to redis://redis:6379/0
+[2023-04-19 16:51:39,768: INFO/MainProcess] mingle: searching for neighbors
+[2023-04-19 16:51:40,781: INFO/MainProcess] mingle: all alone
+[2023-04-19 16:51:40,844: INFO/MainProcess] celery@ca38c8db929a ready.
+[2023-04-19 16:51:44,781: INFO/MainProcess] Events of group {task} enabled by remote.
+[2023-04-19 16:55:35,365: INFO/MainProcess] Connected to redis://redis:6379/0
+[2023-04-19 16:55:35,368: INFO/MainProcess] mingle: searching for neighbors
+[2023-04-19 16:55:36,400: INFO/MainProcess] mingle: all alone
+[2023-04-19 16:55:36,413: INFO/MainProcess] celery@2959d0de8083 ready.
+[2023-04-19 16:55:40,024: INFO/MainProcess] Events of group {task} enabled by remote.
+[2023-04-19 17:09:41,686: WARNING/MainProcess] consumer: Connection to broker lost. Trying to re-establish the connection...
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 332, in start
+    blueprint.start(self)
+  File "/usr/local/lib/python3.10/site-packages/celery/bootsteps.py", line 116, in start
+    step.start(parent)
+  File "/usr/local/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 628, in start
+    c.loop(*c.loop_args())
+  File "/usr/local/lib/python3.10/site-packages/celery/worker/loops.py", line 97, in asynloop
+    next(loop)
+  File "/usr/local/lib/python3.10/site-packages/kombu/asynchronous/hub.py", line 362, in create_loop
+    cb(*cbargs)
+  File "/usr/local/lib/python3.10/site-packages/kombu/transport/redis.py", line 1326, in on_readable
+    self.cycle.on_readable(fileno)
+  File "/usr/local/lib/python3.10/site-packages/kombu/transport/redis.py", line 562, in on_readable
+    chan.handlers[type]()
+  File "/usr/local/lib/python3.10/site-packages/kombu/transport/redis.py", line 906, in _receive
+    ret.append(self._receive_one(c))
+  File "/usr/local/lib/python3.10/site-packages/kombu/transport/redis.py", line 916, in _receive_one
+    response = c.parse_response()
+  File "/usr/local/lib/python3.10/site-packages/redis/client.py", line 1531, in parse_response
+    response = self._execute(conn, try_read)
+  File "/usr/local/lib/python3.10/site-packages/redis/client.py", line 1507, in _execute
+    return conn.retry.call_with_retry(
+  File "/usr/local/lib/python3.10/site-packages/redis/retry.py", line 49, in call_with_retry
+    fail(error)
+  File "/usr/local/lib/python3.10/site-packages/redis/client.py", line 1509, in <lambda>
+    lambda error: self._disconnect_raise_connect(conn, error),
+  File "/usr/local/lib/python3.10/site-packages/redis/client.py", line 1496, in _disconnect_raise_connect
+    raise error
+  File "/usr/local/lib/python3.10/site-packages/redis/retry.py", line 46, in call_with_retry
+    return do()
+  File "/usr/local/lib/python3.10/site-packages/redis/client.py", line 1508, in <lambda>
+    lambda: command(*args, **kwargs),
+  File "/usr/local/lib/python3.10/site-packages/redis/client.py", line 1529, in try_read
+    return conn.read_response()
+  File "/usr/local/lib/python3.10/site-packages/redis/connection.py", line 865, in read_response
+    response = self._parser.read_response(disable_decoding=disable_decoding)
+  File "/usr/local/lib/python3.10/site-packages/redis/connection.py", line 346, in read_response
+    result = self._read_response(disable_decoding=disable_decoding)
+  File "/usr/local/lib/python3.10/site-packages/redis/connection.py", line 356, in _read_response
+    raw = self._buffer.readline()
+  File "/usr/local/lib/python3.10/site-packages/redis/connection.py", line 259, in readline
+    self._read_from_socket()
+  File "/usr/local/lib/python3.10/site-packages/redis/connection.py", line 212, in _read_from_socket
+    raise ConnectionError(SERVER_CLOSED_CONNECTION_ERROR)
+redis.exceptions.ConnectionError: Connection closed by server.
+[2023-04-19 17:09:41,693: WARNING/MainProcess] /usr/local/lib/python3.10/site-packages/celery/worker/consumer/consumer.py:367: CPendingDeprecationWarning: 
+In Celery 5.1 we introduced an optional breaking change which
+on connection loss cancels all currently executed tasks with late acknowledgement enabled.
+These tasks cannot be acknowledged as the connection is gone, and the tasks are automatically redelivered back to the queue.
+You can enable this behavior using the worker_cancel_long_running_tasks_on_connection_loss setting.
+In Celery 5.1 it is set to False by default. The setting will be set to True by default in Celery 6.0.
+
+  warnings.warn(CANCEL_TASKS_BY_DEFAULT, CPendingDeprecationWarning)
+
+[2023-04-19 17:09:41,701: ERROR/MainProcess] consumer: Cannot connect to redis://redis:6379/0: Error 111 connecting to redis:6379. Connection refused..
+Trying again in 2.00 seconds... (1/100)
+
+[2023-04-19 17:10:58,307: INFO/MainProcess] Connected to redis://redis:6379/0
+[2023-04-19 17:10:58,311: INFO/MainProcess] mingle: searching for neighbors
+[2023-04-19 17:10:59,338: INFO/MainProcess] mingle: all alone
+[2023-04-19 17:10:59,399: INFO/MainProcess] celery@ed8b8138afc4 ready.
+[2023-04-19 17:11:03,307: INFO/MainProcess] Events of group {task} enabled by remote.
+[2023-04-19 17:13:39,594: INFO/MainProcess] Connected to redis://redis:6379/0
+[2023-04-19 17:13:39,597: INFO/MainProcess] mingle: searching for neighbors
+[2023-04-19 17:13:40,606: INFO/MainProcess] mingle: all alone
+[2023-04-19 17:13:40,615: INFO/MainProcess] celery@ed8b8138afc4 ready.
+[2023-04-19 17:13:44,177: INFO/MainProcess] Events of group {task} enabled by remote.
