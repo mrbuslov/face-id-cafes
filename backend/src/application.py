@@ -1,4 +1,4 @@
-from .face_id.service import clear_peer_connections, index, offer
+from .face_id.service import clear_peer_connections
 import os
 
 from fastapi import FastAPI
