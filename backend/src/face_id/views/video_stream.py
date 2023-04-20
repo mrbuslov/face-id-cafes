@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import Set, List
 
 import cv2
@@ -15,10 +16,8 @@ from src.face_id.schemas import Offer
 from src.face_id.service import VideoTransformTrack
 from src.face_id.utils.ws import VideoSocket
 
-# faces = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-
-
-templates = Jinja2Templates(directory="/home/serhii/PetProjects/face-id-cafes/backend/src/face_id/views/templates")
+templates_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
+templates = Jinja2Templates(directory=templates_path)
 
 pcs: Set[RTCPeerConnection] = set()
 open_websockets: List[VideoSocket] = []
@@ -28,11 +27,8 @@ async def data_stream(websocket: WebSocket):
     await websocket.accept()
     while True:
         unique_id = await websocket.receive_text()
-        open_websockets.append(
-            VideoSocket(websocket=websocket, unique_id=unique_id)
-        )
+        open_websockets.append(VideoSocket(websocket=websocket, unique_id=unique_id))
         await websocket.send_text("Connection established")
-
 
 
 async def index(request: Request):
