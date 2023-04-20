@@ -1,5 +1,5 @@
 import asyncio
-from typing import Set
+from typing import Set, List
 
 import cv2
 from av import VideoFrame
@@ -7,10 +7,9 @@ from av import VideoFrame
 from aiortc import MediaStreamTrack, RTCPeerConnection, RTCSessionDescription
 from aiortc.contrib.media import MediaRelay, MediaBlackhole
 
-from starlette.requests import Request
 from starlette.templating import Jinja2Templates
 
-from src.face_id.schemas import Offer
+from src.face_id.utils.ws import VideoSocket
 
 faces = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
@@ -26,15 +25,25 @@ class VideoTransformTrack(MediaStreamTrack):
 
     kind = "video"
 
-    def __init__(self, track, transform):
+    def __init__(self, track, transform, host: str, code: str, websockets: List[VideoSocket]):
         super().__init__()
         self.track = track
         self.transform = transform
+        self.host = host
+        self.code = code
+        self.websockets = websockets
 
+    async def notify_socket(self):
+        for ws in self.websockets:
+            if ws.unique_id == self.code:
+                await ws.websocket.send_text("Face detected - " + self.code)
+                return None
 
     async def recv(self):
+        await asyncio.sleep(5)
         frame = await self.track.recv()
-        
+        await self.notify_socket()
+
         img = frame.to_ndarray(format="bgr24")
         # https://stackoverflow.com/a/55628240
         face = faces.detectMultiScale(img, 1.1, 6)
@@ -94,8 +103,8 @@ class VideoTransformTrack(MediaStreamTrack):
 #     return {"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}
 
 
-async def clear_peer_connections():
+async def clear_peer_connections(peer_connections: Set[RTCPeerConnection]) -> None:
     # close peer connections
-    coros = [pc.close() for pc in pcs]
-    await asyncio.gather(*coros)
+    coroutines = [pc.close() for pc in peer_connections]
+    await asyncio.gather(*coroutines)
     pcs.clear()

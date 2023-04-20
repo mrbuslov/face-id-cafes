@@ -3,6 +3,21 @@ var iceConnectionLog = document.getElementById('ice-connection-state'),
     iceGatheringLog = document.getElementById('ice-gathering-state'),
     signalingLog = document.getElementById('signaling-state');
 
+// generate websocket id
+var webSocketId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+const socket = new WebSocket('wss://0.0.0.0:8000/video');
+socket.addEventListener('open', function (event) {
+  console.log('WebSocket connection established');
+  socket.send(webSocketId);
+});
+
+socket.addEventListener('close', function (event) {
+  console.log('WebSocket connection closed');
+});
+
+socket.addEventListener('message', function (event) {
+      console.log('Message accepted: ' + event.data);
+});
 // peer connection
 var pc = null;
 
@@ -73,7 +88,7 @@ function negotiate() {
             body: JSON.stringify({
                 sdp: offer.sdp,
                 type: offer.type,
-                unique_id: Date.now().toString(36) + Math.random().toString(36).substr(2)
+                unique_id: webSocketId
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -129,13 +144,13 @@ function start() {
     var constraints = {
         audio: false,
         video: {
-            width: 1280,
-            height: 720,
+            width: { min: 640, ideal: 1280, max: 1920 },
+            height: { min: 576, ideal: 720, max: 1080 },
             frameRate: {
                 "max": "0.1"
             }
         }
-        // video: false,
+        // video: true,
     };
 
     
