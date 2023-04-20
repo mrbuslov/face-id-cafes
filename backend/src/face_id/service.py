@@ -12,9 +12,7 @@ from starlette.templating import Jinja2Templates
 from src.face_id.utils.ws import VideoSocket
 
 faces = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-
 pcs: Set[RTCPeerConnection] = set()
-
 templates = Jinja2Templates(directory="templates")
 
 
@@ -33,14 +31,18 @@ class VideoTransformTrack(MediaStreamTrack):
         self.code = code
         self.websockets = websockets
 
-    async def notify_socket(self):
+    async def notify_socket(self, name:str = None) -> dict:
         for ws in self.websockets:
             if ws.unique_id == self.code:
-                await ws.websocket.send_text("Face detected - " + self.code)
-                return None
+                await ws.websocket.send_json({
+                    'status': 'detecting',
+                    'code': self.code,
+                    'name': name,
+                })
+                return {}
 
     async def recv(self):
-        await asyncio.sleep(5)
+        # await asyncio.sleep(5)
         frame = await self.track.recv()
         await self.notify_socket()
 
@@ -55,52 +57,6 @@ class VideoTransformTrack(MediaStreamTrack):
         new_frame.pts = frame.pts
         new_frame.time_base = frame.time_base
         return new_frame
-
-
-# async def index(request: Request):
-#     return templates.TemplateResponse("index.html", {"request": request})
-#
-#
-#
-# async def offer(params: Offer):
-#     offer = RTCSessionDescription(sdp=params.sdp, type=params.type)
-#
-#     pc = RTCPeerConnection()
-#     pcs.add(pc)
-#     recorder = MediaBlackhole()
-#
-#     relay = MediaRelay()
-#
-#     @pc.on("connectionstatechange")
-#     async def on_connectionstatechange():
-#         print("Connection state is %s" % pc.connectionState)
-#         if pc.connectionState == "failed":
-#             await pc.close()
-#             pcs.discard(pc)
-#
-#
-#     @pc.on("track")
-#     def on_track(track):
-#         if track.kind == "video":
-#             pc.addTrack(
-#                 VideoTransformTrack(relay.subscribe(track), transform=params.video_transform)
-#             )
-#
-#
-#         @track.on("ended")
-#         async def on_ended():
-#             await recorder.stop()
-#
-#     # handle offer
-#     await pc.setRemoteDescription(offer)
-#     await recorder.start()
-#
-#     # send answer
-#     answer = await pc.createAnswer()
-#     await pc.setRemoteDescription(offer)
-#     await pc.setLocalDescription(answer)
-#
-#     return {"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}
 
 
 async def clear_peer_connections(peer_connections: Set[RTCPeerConnection]) -> None:

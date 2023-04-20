@@ -5,7 +5,8 @@ var iceConnectionLog = document.getElementById('ice-connection-state'),
 
 // generate websocket id
 var webSocketId = Date.now().toString(36) + Math.random().toString(36).substr(2);
-const socket = new WebSocket('wss://0.0.0.0:8000/video');
+// const socket = new WebSocket('wss://0.0.0.0:8000/video');
+const socket = new WebSocket('ws://127.0.0.1:8000/video');
 socket.addEventListener('open', function (event) {
   console.log('WebSocket connection established');
   socket.send(webSocketId);
@@ -16,7 +17,14 @@ socket.addEventListener('close', function (event) {
 });
 
 socket.addEventListener('message', function (event) {
-      console.log('Message accepted: ' + event.data);
+    console.log('Message accepted: ' + event.data);
+    console.log(JSON.parse(event.data))
+    if(!!event.data.name){
+        document.getElementById('person_name').innerHTML = `<strong>${event.data.name}</strong>`;
+    }
+    else {
+        document.getElementById('person_name').innerHTML = 'Searching for people...';
+    }
 });
 // peer connection
 var pc = null;

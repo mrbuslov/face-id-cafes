@@ -9,15 +9,13 @@ from aiortc import MediaStreamTrack, RTCPeerConnection, RTCSessionDescription
 from aiortc.contrib.media import MediaRelay, MediaBlackhole
 
 from starlette.requests import Request
-from starlette.templating import Jinja2Templates
 from fastapi import WebSocket
 
 from src.face_id.schemas import Offer
 from src.face_id.service import VideoTransformTrack
 from src.face_id.utils.ws import VideoSocket
+from src.face_id.config import templates
 
-templates_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
-templates = Jinja2Templates(directory=templates_path)
 
 pcs: Set[RTCPeerConnection] = set()
 open_websockets: List[VideoSocket] = []
@@ -28,7 +26,7 @@ async def data_stream(websocket: WebSocket):
     while True:
         unique_id = await websocket.receive_text()
         open_websockets.append(VideoSocket(websocket=websocket, unique_id=unique_id))
-        await websocket.send_text("Connection established")
+        await websocket.send_json({'status':'connection_established'})
 
 
 async def index(request: Request):
@@ -54,12 +52,13 @@ async def offer(params: Offer, request: Request) -> dict:
     @pc.on("track")
     def on_track(track):
         if track.kind == "video":
-            pc.addTrack(VideoTransformTrack(
-                relay.subscribe(track),
-                transform=params.video_transform,
-                host=request.client.host,
-                code=params.unique_id,
-                websockets=open_websockets
+            pc.addTrack(
+                VideoTransformTrack(
+                    relay.subscribe(track),
+                    transform=params.video_transform,
+                    host=request.client.host,
+                    code=params.unique_id,
+                    websockets=open_websockets
                 )
             )
 
