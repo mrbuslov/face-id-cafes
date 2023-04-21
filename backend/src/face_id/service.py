@@ -4,16 +4,15 @@ from typing import Set, List
 import cv2
 from av import VideoFrame
 
-from aiortc import MediaStreamTrack, RTCPeerConnection, RTCSessionDescription
-from aiortc.contrib.media import MediaRelay, MediaBlackhole
+from aiortc import MediaStreamTrack, RTCPeerConnection
+from src.face_id.schemas import CeleryResponse
 
-from starlette.templating import Jinja2Templates
-
-from src.face_id.utils.ws import VideoSocket
+from src.face_id.schemas import VideoSocket, UserData
+from src.celery.worker import process_frame
+from celery.result import AsyncResult
 
 faces = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 pcs: Set[RTCPeerConnection] = set()
-templates = Jinja2Templates(directory="templates")
 
 
 class VideoTransformTrack(MediaStreamTrack):
@@ -30,6 +29,7 @@ class VideoTransformTrack(MediaStreamTrack):
         self.host = host
         self.code = code
         self.websockets = websockets
+        self.celery_tasks_list = []
 
     async def notify_socket(self, name:str = None) -> dict:
         for ws in self.websockets:
@@ -42,9 +42,20 @@ class VideoTransformTrack(MediaStreamTrack):
                 return {}
 
     async def recv(self):
+        print('frame received')
         # await asyncio.sleep(5)
         frame = await self.track.recv()
-        await self.notify_socket()
+
+        for task_id in self.celery_tasks_list:
+            task = await get_status(task_id)
+            if task.is_ready:
+                await self.notify_socket(task.task_result.user_name)
+       
+        if len(self.celery_tasks_list) <= 2:
+            print('celery_tasks_list is less that 2')
+            task = process_frame.delay()
+            self.celery_tasks_list.append(task.id)
+
 
         img = frame.to_ndarray(format="bgr24")
         # https://stackoverflow.com/a/55628240
@@ -64,3 +75,15 @@ async def clear_peer_connections(peer_connections: Set[RTCPeerConnection]) -> No
     coroutines = [pc.close() for pc in peer_connections]
     await asyncio.gather(*coroutines)
     pcs.clear()
+
+
+async def get_status(task_id: str) -> CeleryResponse:
+    task_result = AsyncResult(task_id)
+    result = CeleryResponse(
+        task_id = task_id,
+        task_status = task_result.status,
+        task_result = UserData(**task_result.result),
+        is_ready = task_result.ready()
+    )
+    print(result)
+    return result

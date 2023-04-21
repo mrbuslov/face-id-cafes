@@ -10,7 +10,7 @@ from src.face_id.config import static_dir
 
 
 ROOT = os.path.dirname(__file__)
-app = FastAPI()
+app = FastAPI(debug=True)
 
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 

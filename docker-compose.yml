@@ -9,7 +9,7 @@ services:
     volumes:
       - ./backend:/var/backend
     ports:
-      - 80:8000
+      - 8000:8000
     volumes:
       - ./backend:/var/backend
       - static_volume:/var/backend/static
@@ -30,19 +30,19 @@ services:
   redis:
     image: redis:7
 
-  celery_dashboard:
-    build: 
-      dockerfile: containers/server/Dockerfile
-    command: celery --broker=redis://redis:6379/0 flower --port=5555
-    ports:
-      - 5556:5555
-    environment:
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
-    depends_on:
-      - server
-      - redis
-      - celery_worker
+  # celery_dashboard:
+  #   build: 
+  #     dockerfile: containers/server/Dockerfile
+  #   command: celery --broker=redis://redis:6379/0 flower --port=5555
+  #   ports:
+  #     - 5556:5555
+  #   environment:
+  #     - CELERY_BROKER_URL=redis://redis:6379/0
+  #     - CELERY_RESULT_BACKEND=redis://redis:6379/0
+  #   depends_on:
+  #     - server
+  #     - redis
+  #     - celery_worker
 
     
 volumes:

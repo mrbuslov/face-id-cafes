@@ -17,10 +17,10 @@ socket.addEventListener('close', function (event) {
 });
 
 socket.addEventListener('message', function (event) {
-    console.log('Message accepted: ' + event.data);
-    console.log(JSON.parse(event.data))
-    if(!!event.data.name){
-        document.getElementById('person_name').innerHTML = `<strong>${event.data.name}</strong>`;
+    data = JSON.parse(event.data);
+    console.log()
+    if(!!data.name){
+        document.getElementById('person_name').innerHTML = `<strong>${data.name}</strong>`;
     }
     else {
         document.getElementById('person_name').innerHTML = 'Searching for people...';

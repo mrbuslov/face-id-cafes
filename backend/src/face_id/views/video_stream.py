@@ -1,4 +1,5 @@
 import asyncio
+import json
 import os
 from typing import Set, List
 
@@ -13,11 +14,12 @@ from fastapi import WebSocket
 
 from src.face_id.schemas import Offer
 from src.face_id.service import VideoTransformTrack
-from src.face_id.utils.ws import VideoSocket
+from src.face_id.schemas import VideoSocket
 from src.face_id.config import templates
 
 
 pcs: Set[RTCPeerConnection] = set()
+# TODO: keep all websockets in redis db
 open_websockets: List[VideoSocket] = []
 
 
