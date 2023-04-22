@@ -465,3 +465,4 @@ $RECYCLE.BIN/
 *.lnk
 
 node_modules/
+certs/

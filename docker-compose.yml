@@ -1,0 +1,49 @@
+name: "face-id"
+
+services:
+  server:
+    build:
+      dockerfile: containers/server/Dockerfile
+    command: >
+      sh -c "uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload"
+    volumes:
+      - ./backend:/var/backend
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend:/var/backend
+      - static_volume:/var/backend/static
+
+  celery_worker:
+    build: 
+      dockerfile: containers/server/Dockerfile
+    command: celery -A src.celery.worker.celery worker --loglevel=info --logfile=logs/celery/celery.log 
+    volumes:
+      - ./backend:/var/backend
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - server
+      - redis
+
+  redis:
+    image: redis:7
+
+  # celery_dashboard:
+  #   build: 
+  #     dockerfile: containers/server/Dockerfile
+  #   command: celery --broker=redis://redis:6379/0 flower --port=5555
+  #   ports:
+  #     - 5556:5555
+  #   environment:
+  #     - CELERY_BROKER_URL=redis://redis:6379/0
+  #     - CELERY_RESULT_BACKEND=redis://redis:6379/0
+  #   depends_on:
+  #     - server
+  #     - redis
+  #     - celery_worker
+
+    
+volumes:
+  static_volume:
