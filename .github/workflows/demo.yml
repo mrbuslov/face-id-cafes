@@ -13,17 +13,17 @@ jobs:
       - name: Load all the files
         uses: actions/checkout@v3
 
-      - name: Install docker compose
-        uses: docker/compose-cli-action@v0.6.0
-        with: 
-          compose-version: 2.x
+      # - name: Install docker compose
+      #   uses: docker/compose-cli-action@v0.6.0
+      #   with: 
+      #     compose-version: 2.x
         
       - name: Build compose YAML
         run: |
-          docker-compose build
-          docker-compose up 
-          docker-compose ps
-          docker-compose down
+          docker compose build
+          docker compose up 
+          docker compose ps
+          docker compose down
 
       
 
