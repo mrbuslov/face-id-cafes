@@ -17,7 +17,7 @@ services:
   celery_worker:
     build: 
       dockerfile: containers/server/Dockerfile
-    command: celery -A src.celery.worker.celery worker --loglevel=info --logfile=logs/celery/celery.log 
+    command: celery -A src.celery.worker.celery worker --loglevel=info #--logfile=logs/celery/celery.log 
     volumes:
       - ./backend:/var/backend
     environment:
