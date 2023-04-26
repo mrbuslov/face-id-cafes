@@ -2,7 +2,9 @@ import asyncio
 from typing import Set, List
 
 from aiortc import RTCPeerConnection
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+
+import traceback
 
 
 async def clear_peer_connections(pcs: Set[RTCPeerConnection]) -> None:
@@ -58,3 +60,11 @@ def update_events(app: FastAPI, events: List[dict]) -> FastAPI:
     for event in events:
         app.add_event_handler(**event)
     return app
+
+
+async def catch_exceptions_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as e:
+        print(traceback.format_exc())
+        raise e

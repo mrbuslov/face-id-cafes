@@ -466,3 +466,4 @@ $RECYCLE.BIN/
 
 node_modules/
 certs/
+cropped_face.*

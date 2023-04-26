@@ -1,5 +1,8 @@
 import asyncio
+import json
+import pickle
 from typing import Set, List
+import uuid
 
 import cv2
 from av import VideoFrame
@@ -10,8 +13,9 @@ from src.face_id.schemas import CeleryResponse
 from src.face_id.schemas import VideoSocket, UserData
 from src.celery.worker import process_frame
 from celery.result import AsyncResult
+from src.config import MAX_IMG_PROCESS_SIMULTANEOUSLY
+from src.redis_db.redis import redis_client
 
-faces = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 pcs: Set[RTCPeerConnection] = set()
 
 
@@ -50,24 +54,33 @@ class VideoTransformTrack(MediaStreamTrack):
             task = await get_status(task_id)
             if task.is_ready:
                 await self.notify_socket(task.task_result.user_name)
+                self.celery_tasks_list.remove(task_id)
        
-        if len(self.celery_tasks_list) <= 2:
-            print('celery_tasks_list is less that 2')
-            task = process_frame.delay()
-            self.celery_tasks_list.append(task.id)
+        try:
+            if len(self.celery_tasks_list) < MAX_IMG_PROCESS_SIMULTANEOUSLY:
+                print('celery_tasks_list is less that 2')
+                image_key = str(uuid.uuid4())
+
+                '''
+                Here're 2 options of converting the frame to bytes: 
+                - using cv2.imencode
+                - using pickle
+
+                The second option allows to keep the size of the array, so it's more preferable
+                '''
+                frame_data = pickle.dumps(frame.to_ndarray(format="bgr24"))
+                
+                redis_client.set(image_key, frame_data)
+
+                task = process_frame.delay(image_key)
+                self.celery_tasks_list.append(task.id)
+        except Exception as e:
+            print(e)
 
 
-        img = frame.to_ndarray(format="bgr24")
-        # https://stackoverflow.com/a/55628240
-        face = faces.detectMultiScale(img, 1.1, 6)
-        # face = faces.detectMultiScale(img, scaleFactor=1.5, minNeighbors=1) # higher speed, worse quality
-        for (x, y, w, h) in face:
-            cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        # just return user's video on front
+        return frame
 
-        new_frame = VideoFrame.from_ndarray(img, format="bgr24")
-        new_frame.pts = frame.pts
-        new_frame.time_base = frame.time_base
-        return new_frame
 
 
 async def clear_peer_connections(peer_connections: Set[RTCPeerConnection]) -> None:

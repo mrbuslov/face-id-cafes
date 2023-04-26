@@ -36,3 +36,8 @@ class CeleryResponse:
     task_status: str
     task_result: UserData
     is_ready: bool
+
+
+
+# @dataclass 
+# class CeleryFrame

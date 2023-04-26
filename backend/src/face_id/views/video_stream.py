@@ -15,7 +15,7 @@ from fastapi import WebSocket
 from src.face_id.schemas import Offer
 from src.face_id.service import VideoTransformTrack
 from src.face_id.schemas import VideoSocket
-from src.face_id.config import templates
+from src.config import templates
 
 
 pcs: Set[RTCPeerConnection] = set()

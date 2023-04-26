@@ -1,5 +1,5 @@
 # Server
-- **RUN** - `uvicorn src.main:app --reload --port 80 --host 127.0.0.1` (you have to be in backend folder)
+- **RUN** - `uvicorn src.main:app --reload --port 8000 --host 127.0.0.1` (you have to be in backend folder)
 - **Run celery locally** (you have to be in backend folder)  
   - Windows: `celery -A src.celery.worker.celery worker --loglevel=info --logfile=logs/celery/celery.log -P gevent` 
   - Others: `celery -A src.celery.worker.celery worker --loglevel=info --logfile=logs/celery/celery.log`
