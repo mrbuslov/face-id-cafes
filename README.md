@@ -18,3 +18,6 @@ Be sure to run the backend if you want to "linter" it.
   Runs style linter in the terminal. You'll see the errors, connected with code style in *.css* files.
   - `npm run lint:styles:fix`  
     Fixes majority of style errors. There may be some error, that you have to fix *by yourself*.
+
+# Desktop
+- Generate an app: `nativefier --name "Face-ID" http://127.0.0.1:8000/`
