@@ -26,7 +26,7 @@ def process_frame(img_id: str):
         frame = pickle.loads(redis_client.get(img_id))
 
         # https://stackoverflow.com/a/55628240
-        face = faces.detectMultiScale(frame, 1.1, 6)
+        face = faces.detectMultiScale(frame, 1.05, 18)
 
         try:
             for (x, y, w, h) in face:
@@ -37,7 +37,7 @@ def process_frame(img_id: str):
             redis_client.delete(img_id)
         except Exception as e:
             print('process_frame exception: (NO FACE DETECTED)')
-            raise Exception('NO FACE DETECTED')
+            # raise Exception('NO FACE DETECTED')
 
         return dataclasses.asdict(UserData(user_name='Dmitry'))
 

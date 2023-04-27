@@ -36,8 +36,11 @@ class VideoTransformTrack(MediaStreamTrack):
         self.celery_tasks_list = []
 
     async def notify_socket(self, name:str = None) -> dict:
+        print('ws notify block')
+        print('websockets:', self.websockets)
         for ws in self.websockets:
             if ws.unique_id == self.code:
+                print('ws found! sending data')
                 await ws.websocket.send_json({
                     'status': 'detecting',
                     'code': self.code,
@@ -47,14 +50,21 @@ class VideoTransformTrack(MediaStreamTrack):
 
     async def recv(self):
         print('frame received')
-        # await asyncio.sleep(5)
         frame = await self.track.recv()
 
-        for task_id in self.celery_tasks_list:
-            task = await get_status(task_id)
-            if task.is_ready:
-                await self.notify_socket(task.task_result.user_name)
-                self.celery_tasks_list.remove(task_id)
+        # the error:  src.face_id.schemas.UserData() argument after ** must be a mapping, not NoneType. 
+        # for now leave try except block
+        try:
+            for task_id in self.celery_tasks_list:
+                task = await get_status(task_id)
+                if task.is_ready:
+                    # pass
+                    print(task.task_result.user_name)
+                    await self.notify_socket(task.task_result.user_name)
+                    # self.celery_tasks_list.remove(task_id)
+        except Exception as e:
+            print('for task_id in self.celery_tasks_list exception: ', e)
+
        
         try:
             if len(self.celery_tasks_list) < MAX_IMG_PROCESS_SIMULTANEOUSLY:
@@ -98,5 +108,5 @@ async def get_status(task_id: str) -> CeleryResponse:
         task_result = UserData(**task_result.result),
         is_ready = task_result.ready()
     )
-    print(result)
+    print('get_status result', result)
     return result

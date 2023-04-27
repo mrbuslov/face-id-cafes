@@ -12,6 +12,7 @@ from src.utils import (
 )
 from src.face_id.routes import routes as face_id_routes, web_socket_routes, events
 from src.config import static_dir, host
+from src.redis_db.redis import redis_client
 
 
 ROOT = os.path.dirname(__file__)
@@ -24,6 +25,15 @@ app = update_websocket_routes(app, web_socket_routes)
 app = update_events(app, events)
 app.middleware('http')(catch_exceptions_middleware)
 
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    print('app shutdown!!!!!!!!!!!')
+    try:
+        redis_client.flushdb()
+    except Exception as e:
+        print('shutdown exception', e)
 
 
 if __name__ == "__main__":
