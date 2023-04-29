@@ -9,7 +9,7 @@ class Order(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     created_at = Column(DateTime)
-    department_id = Column(Integer, ForeignKey("departments.id"))
+    department_id = Column(Integer, ForeignKey("departments.id", ondelete="CASCADE"))
 
     department = relationship('Department', back_populates='orders')
     items = relationship('OrderItem', back_populates='order')
@@ -22,6 +22,6 @@ class OrderItem(Base):
     name = Column(String)
     price = Column(Float(precision=2))
     quantity = Column(Float(precision=3))
-    order_id = Column(Integer, ForeignKey("orders.id"))
+    order_id = Column(Integer, ForeignKey("orders.id", ondelete="CASCADE"))
 
     order = relationship('Order', back_populates='items')

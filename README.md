@@ -4,6 +4,7 @@
   - Windows: `celery -A src.celery.worker.celery worker --loglevel=info --logfile=logs/celery/celery.log -P gevent` 
   - Others: `celery -A src.celery.worker.celery worker --loglevel=info --logfile=logs/celery/celery.log`
 
+
 # Linters
 
 ***Note***: if you want to run linters, go to directory - it can be either *backend* or *frontend*  
@@ -19,14 +20,16 @@ Be sure to run the backend if you want to "linter" it.
   - `npm run lint:styles:fix`  
     Fixes majority of style errors. There may be some error, that you have to fix *by yourself*.
 
+
 # Desktop
 - Generate an app: `nativefier --name "Face-ID" http://127.0.0.1:8000/`
 
+
 # Alembic 
-### Tutorial
-- `alembic init migrations`
-- Then watch [this video](https://www.youtube.com/watch?v=eXj1gdDLKho&ab_channel=FastAPIChannel)
 
 ### Migrations
 - Make migrations `alembic revision --autogenerate -m "MIGRATION_NAME"`
 - Migrate `alembic upgrade head` or `alembic upgrade MIGRATION_HASH`
+
+### Tutorial
+- Watch [this video](https://www.youtube.com/watch?v=eXj1gdDLKho&ab_channel=FastAPIChannel)

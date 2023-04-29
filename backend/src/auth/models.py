@@ -1,4 +1,5 @@
 # SQLAlchemy models
+# we use back_populates instead of backref, because sqlalchemy docs prefer it https://docs.sqlalchemy.org/en/20/orm/backref.html
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
@@ -22,8 +23,8 @@ class Department(Base):
     __tablename__ = 'departments'
 
     id = Column(Integer, primary_key=True, index=True)
-    organization_id = Column(Integer, ForeignKey("organizations.id"))
     hashed_password = Column(String) # we assume, that people will login with department account
+    organization_id = Column(Integer, ForeignKey("organizations.id", ondelete='CASCADE'))
 
     organization = relationship('Organization', back_populates='departments')
     orders = relationship('Order', back_populates='department')
@@ -33,5 +34,6 @@ class Guest(Base):
     __tablename__ = 'guests'
 
     id = Column(Integer, primary_key=True, index=True)
+    organization_id = Column(Integer, ForeignKey('organizations.id', ondelete='CASCADE'))
 
     organization = relationship('Organization', back_populates='guests')
