@@ -21,3 +21,12 @@ Be sure to run the backend if you want to "linter" it.
 
 # Desktop
 - Generate an app: `nativefier --name "Face-ID" http://127.0.0.1:8000/`
+
+# Alembic 
+### Tutorial
+- `alembic init migrations`
+- Then watch [this video](https://www.youtube.com/watch?v=eXj1gdDLKho&ab_channel=FastAPIChannel)
+
+### Migrations
+- Make migrations `alembic revision --autogenerate -m "MIGRATION_NAME"`
+- Migrate `alembic upgrade head` or `alembic upgrade MIGRATION_HASH`
