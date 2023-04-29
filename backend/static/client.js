@@ -115,6 +115,7 @@ function negotiate() {
 
 function start() {
     document.getElementById('start').style.display = 'none';
+    document.querySelector('.loader').style.display = 'block';
 
     pc = createPeerConnection();
 
@@ -163,9 +164,10 @@ function start() {
 
     
     if (constraints.audio || constraints.video) {
-        document.getElementById('media').style.display = 'block';
+        document.querySelector('#media').style.display = 'block';
         navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
             stream.getTracks().forEach(function(track) {
+                document.querySelector('.loader').style.display = 'none';
                 pc.addTrack(track, stream);
             });
             return negotiate();

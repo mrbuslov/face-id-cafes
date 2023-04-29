@@ -5,6 +5,7 @@ from aiortc import RTCPeerConnection
 from fastapi import FastAPI, Request
 
 import traceback
+import bcrypt
 
 
 async def clear_peer_connections(pcs: Set[RTCPeerConnection]) -> None:
@@ -68,3 +69,12 @@ async def catch_exceptions_middleware(request: Request, call_next):
     except Exception as e:
         print(traceback.format_exc())
         raise e
+    
+
+def hash_password(password: str) -> bytes:
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode('utf-8'), salt)
+
+
+def match_password(password: str, stored_password: str) -> bool:
+    return bcrypt.checkpw(password.encode('utf-8'), stored_password)

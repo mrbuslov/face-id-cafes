@@ -13,6 +13,9 @@ from src.utils import (
 from src.face_id.routes import routes as face_id_routes, web_socket_routes, events
 from src.config import static_dir, host
 from src.redis_db.redis import redis_client
+from src.database import SessionLocal, engine
+from src.auth import models as models1
+from src.orders import models as models2
 
 
 ROOT = os.path.dirname(__file__)
@@ -25,6 +28,17 @@ app = update_websocket_routes(app, web_socket_routes)
 app = update_events(app, events)
 app.middleware('http')(catch_exceptions_middleware)
 
+# # create DB tables
+# models1.Base.metadata.create_all(bind=engine)
+# models2.Base.metadata.create_all(bind=engine)
+
+# # Dependency
+# def get_db():
+#     db = SessionLocal()
+#     try:
+#         yield db
+#     finally:
+#         db.close()
 
 
 @app.on_event("shutdown")
