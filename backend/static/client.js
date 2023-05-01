@@ -2,11 +2,13 @@
 var iceConnectionLog = document.getElementById('ice-connection-state'),
     iceGatheringLog = document.getElementById('ice-gathering-state'),
     signalingLog = document.getElementById('signaling-state');
+var host = 'http://127.0.0.1:8000';
+var host_name = '127.0.0.1:8000';
 
 // generate websocket id
 var webSocketId = Date.now().toString(36) + Math.random().toString(36).substr(2);
 // const socket = new WebSocket('wss://0.0.0.0:8000/video');
-const socket = new WebSocket('ws://127.0.0.1:8000/video');
+const socket = new WebSocket(`ws://${host_name}/video`);
 socket.addEventListener('open', function (event) {
   console.log('WebSocket connection established');
   socket.send(webSocketId);
@@ -92,7 +94,7 @@ function negotiate() {
         offer.sdp = sdpFilterCodec('video', 'VP8/90000', offer.sdp);
 
         document.getElementById('offer-sdp').textContent = offer.sdp;
-        return fetch('/offer', {
+        return fetch(host + '/offer', {
             body: JSON.stringify({
                 sdp: offer.sdp,
                 type: offer.type,
