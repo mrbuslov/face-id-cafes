@@ -3,6 +3,7 @@ import os
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.utils import (
     update_http_routes,
@@ -27,6 +28,13 @@ app = update_http_routes(app, face_id_routes)
 app = update_websocket_routes(app, web_socket_routes)
 app = update_events(app, events)
 app.middleware('http')(catch_exceptions_middleware)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # # create DB tables
 # models1.Base.metadata.create_all(bind=engine)
