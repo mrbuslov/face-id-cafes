@@ -33,3 +33,8 @@ Be sure to run the backend if you want to "linter" it.
 
 ### Tutorial
 - Watch [this video](https://www.youtube.com/watch?v=eXj1gdDLKho&ab_channel=FastAPIChannel)
+
+
+# Desktop (Electron)
+
+- Run `npm start`

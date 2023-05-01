@@ -1,0 +1,15 @@
+{
+  "name": "face-id",
+  "productName": "Face ID project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^24.1.3"
+  }
+}
