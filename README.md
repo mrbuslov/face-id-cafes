@@ -38,3 +38,4 @@ Be sure to run the backend if you want to "linter" it.
 # Desktop (Electron)
 
 - Run `npm start`
+- Run with reloading, if changes are detected `npx electronmon .`

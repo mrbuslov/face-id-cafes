@@ -10,18 +10,18 @@ var webSocketId = Date.now().toString(36) + Math.random().toString(36).substr(2)
 // const socket = new WebSocket('wss://0.0.0.0:8000/video');
 const socket = new WebSocket(`ws://${host_name}/video`);
 socket.addEventListener('open', function (event) {
-  console.log('WebSocket connection established');
-  socket.send(webSocketId);
+    console.log('WebSocket connection established');
+    socket.send(webSocketId);
 });
 
 socket.addEventListener('close', function (event) {
-  console.log('WebSocket connection closed');
+    console.log('WebSocket connection closed');
 });
 
 socket.addEventListener('message', function (event) {
     data = JSON.parse(event.data);
     console.log()
-    if(!!data.name){
+    if (!!data.name) {
         document.getElementById('person_name').innerHTML = `<strong>${data.name}</strong>`;
     }
     else {
@@ -42,23 +42,23 @@ function createPeerConnection() {
     pc = new RTCPeerConnection(config);
 
     // register some listeners to help debugging
-    pc.addEventListener('icegatheringstatechange', function() {
+    pc.addEventListener('icegatheringstatechange', function () {
         iceGatheringLog.textContent += ' -> ' + pc.iceGatheringState;
     }, false);
     iceGatheringLog.textContent = pc.iceGatheringState;
 
-    pc.addEventListener('iceconnectionstatechange', function() {
+    pc.addEventListener('iceconnectionstatechange', function () {
         iceConnectionLog.textContent += ' -> ' + pc.iceConnectionState;
     }, false);
     iceConnectionLog.textContent = pc.iceConnectionState;
 
-    pc.addEventListener('signalingstatechange', function() {
+    pc.addEventListener('signalingstatechange', function () {
         signalingLog.textContent += ' -> ' + pc.signalingState;
     }, false);
     signalingLog.textContent = pc.signalingState;
 
     // connect audio / video
-    pc.addEventListener('track', function(evt) {
+    pc.addEventListener('track', function (evt) {
         if (evt.track.kind == 'video')
             document.getElementById('video').srcObject = evt.streams[0];
         else
@@ -69,11 +69,11 @@ function createPeerConnection() {
 }
 
 function negotiate() {
-    return pc.createOffer().then(function(offer) {
+    return pc.createOffer().then(function (offer) {
         return pc.setLocalDescription(offer);
-    }).then(function() {
+    }).then(function () {
         // wait for ICE gathering to complete
-        return new Promise(function(resolve) {
+        return new Promise(function (resolve) {
             if (pc.iceGatheringState === 'complete') {
                 resolve();
             } else {
@@ -86,7 +86,7 @@ function negotiate() {
                 pc.addEventListener('icegatheringstatechange', checkState);
             }
         });
-    }).then(function() {
+    }).then(function () {
         var offer = pc.localDescription;
         var codec;
 
@@ -105,12 +105,12 @@ function negotiate() {
             },
             method: 'POST'
         });
-    }).then(function(response) {
+    }).then(function (response) {
         return response.json();
-    }).then(function(answer) {
+    }).then(function (answer) {
         document.getElementById('answer-sdp').textContent = answer.sdp;
         return pc.setRemoteDescription(answer);
-    }).catch(function(e) {
+    }).catch(function (e) {
         alert(e);
     });
 }
@@ -134,19 +134,19 @@ function start() {
 
     // {"ordered": false, "maxRetransmits": 0}
     // {"ordered": false, "maxPacketLifetime": 500}
-    var parameters = {"ordered": true}; 
+    var parameters = { "ordered": true };
 
     dc = pc.createDataChannel('chat', parameters);
-    dc.onclose = function() {
+    dc.onclose = function () {
         clearInterval(dcInterval);
     };
-    dc.onopen = function() {
-        dcInterval = setInterval(function() {
+    dc.onopen = function () {
+        dcInterval = setInterval(function () {
             var message = 'ping ' + current_stamp();
             dc.send(message);
         }, 1000);
     };
-    dc.onmessage = function(evt) {
+    dc.onmessage = function (evt) {
         if (evt.data.substring(0, 4) === 'pong') {
             var elapsed_ms = current_stamp() - parseInt(evt.data.substring(5), 10);
         }
@@ -164,16 +164,16 @@ function start() {
         // video: true,
     };
 
-    
+
     if (constraints.audio || constraints.video) {
         document.querySelector('#media').style.display = 'block';
-        navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-            stream.getTracks().forEach(function(track) {
+        navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+            stream.getTracks().forEach(function (track) {
                 document.querySelector('.loader').style.display = 'none';
                 pc.addTrack(track, stream);
             });
             return negotiate();
-        }, function(err) {
+        }, function (err) {
             alert('Could not acquire media: ' + err);
         });
     } else {
@@ -193,7 +193,7 @@ function stop() {
 
     // close transceivers
     if (pc.getTransceivers) {
-        pc.getTransceivers().forEach(function(transceiver) {
+        pc.getTransceivers().forEach(function (transceiver) {
             if (transceiver.stop) {
                 transceiver.stop();
             }
@@ -201,12 +201,12 @@ function stop() {
     }
 
     // close local audio / video
-    pc.getSenders().forEach(function(sender) {
+    pc.getSenders().forEach(function (sender) {
         sender.track.stop();
     });
 
     // close peer connection
-    setTimeout(function() {
+    setTimeout(function () {
         pc.close();
     }, 500);
 }
@@ -271,3 +271,31 @@ function sdpFilterCodec(kind, codec, realSdp) {
 function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// send screenshot to main.js to process it
+document.getElementById('screenshotBtn').addEventListener('click', (e) => {
+    screenshot.send('screenshot', { 'test': true })
+})
+
+// receive the response from main, if screenshot processed
+screenshot.receive('screenshot:done', () => {
+    console.log('screenshot completed')
+    tools.alert('Screenshot done!', 'success');
+})
+
+
+document.addEventListener('click', () => {
+    console.log('click')
+})
