@@ -1,8 +1,28 @@
+# Installation
+### Front
+Firstly go to desktop, run `npm install`  
+**Requirements:**
+- node version: 14.21.3  
+- electron version: 11.5.0
+- iohook installation [guide](https://www.youtube.com/watch?v=6o9xybTYlLU&t=261s&ab_channel=SciTechEnthusiasts)
+
+
+# Tutorials
+- **Electron**: [link](https://www.youtube.com/watch?v=eXj1gdDLKho&ab_channel=FastAPIChannel)
+- **Iohook**: [link](https://www.youtube.com/watch?v=6o9xybTYlLU&t=261s&ab_channel=SciTechEnthusiasts)
+
+
 # Server
 - **RUN** - `uvicorn src.main:app --reload --port 8000 --host 127.0.0.1` (you have to be in backend folder)
 - **Run celery locally** (you have to be in backend folder)  
   - Windows: `celery -A src.celery.worker.celery worker --loglevel=info --logfile=logs/celery/celery.log -P gevent` 
   - Others: `celery -A src.celery.worker.celery worker --loglevel=info --logfile=logs/celery/celery.log`
+
+
+# Desktop (Electron)
+
+- Run `npm start`
+- Run with reloading, if changes are detected `npm run serve`
 
 
 # Linters
@@ -30,12 +50,3 @@ Be sure to run the backend if you want to "linter" it.
 ### Migrations
 - Make migrations `alembic revision --autogenerate -m "MIGRATION_NAME"`
 - Migrate `alembic upgrade head` or `alembic upgrade MIGRATION_HASH`
-
-### Tutorial
-- Watch [this video](https://www.youtube.com/watch?v=eXj1gdDLKho&ab_channel=FastAPIChannel)
-
-
-# Desktop (Electron)
-
-- Run `npm start`
-- Run with reloading, if changes are detected `npx electronmon .`

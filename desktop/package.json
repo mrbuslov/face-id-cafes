@@ -5,15 +5,32 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "serve": "npx electronmon ."
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^24.1.3"
+    "electron": "^11.5.0"
   },
   "dependencies": {
     "electron-screenshot": "^1.0.5",
+    "iohook": "^0.9.3",
+    "node-abi": "^3.40.0",
     "toastify-js": "^1.12.0"
+  },
+  "iohook": {
+    "targets": [
+      "node-83",
+      "electron-85"
+    ],
+    "platforms": [
+      "win32",
+      "darwin"
+    ],
+    "arches": [
+      "x64",
+      "ia32"
+    ]
   }
 }

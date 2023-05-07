@@ -1,3 +1,4 @@
+'use strict';
 // we use join() instead of path.join(), because it works
 const { join } = require('path');
 const {
@@ -9,7 +10,16 @@ const {
     screen,
     desktopCapturer,
 } = require('electron');
-const fs = require('fs')
+const fs = require('fs');
+// for tracking user clicks - https://wilix-team.github.io/iohook/usage.html#generic-node-application
+const ioHook = require('iohook');
+
+// Register and start hook
+ioHook.start();
+// Alternatively, pass true to start in DEBUG mode.
+// False to disable DEBUG. Cleaner terminal output.
+ioHook.start(true);
+
 
 // --- this should be in env ---
 process.env.NODE_ENV = 'development';
@@ -36,11 +46,6 @@ function createMainWindow() {
     // Open the DevTools
     if (isDev) mainWindow.webContents.openDevTools();
     if (!isDev) mainWindow.setAlwaysOnTop(true, 'screen');
-
-    // Add event listener to detect screen clicks
-    mainWindow.on('mousedown', (event) => {
-        console.log('Screen clicked at', event.x, event.y)
-    })
 }
 
 app.whenReady().then(() => {
@@ -76,6 +81,11 @@ const menu = [{
 }];
 
 
+ioHook.on('mouseclick', (event) => {
+    console.log(event); // { type: 'mousemove', x: 700, y: 400 }
+});
+
+
 // receive messages from client.js
 ipcMain.on('screenshot', (e, options) => {
     desktopCapturer.getSources({
@@ -85,7 +95,7 @@ ipcMain.on('screenshot', (e, options) => {
         }
     })
         .then(sources => {
-            fs.writeFile(`test.png`, sources[0].thumbnail.toPNG(), (err) => {
+            fs.writeFile(`screenshot.png`, sources[0].thumbnail.toPNG(), (err) => {
                 if (err) throw err
                 console.log('Image Saved')
             })
@@ -93,4 +103,3 @@ ipcMain.on('screenshot', (e, options) => {
     // mainWindow.webContents.send('screenshot:done')
     e.sender.send('screenshot:done')
 })
-
