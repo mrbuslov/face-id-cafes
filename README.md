@@ -8,7 +8,8 @@ Firstly go to desktop, run `npm install`
 
 
 # Tutorials
-- **Electron**: [link](https://www.youtube.com/watch?v=eXj1gdDLKho&ab_channel=FastAPIChannel)
+- **Alembic**: [link](https://www.youtube.com/watch?v=eXj1gdDLKho&ab_channel=FastAPIChannel)
+- **Electron**: [link](https://www.youtube.com/watch?v=ML743nrkMHw&ab_channel=TraversyMedia)
 - **Iohook**: [link](https://www.youtube.com/watch?v=6o9xybTYlLU&t=261s&ab_channel=SciTechEnthusiasts)
 
 
