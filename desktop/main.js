@@ -81,8 +81,13 @@ const menu = [{
 }];
 
 
-ioHook.on('mouseclick', (event) => {
-    console.log(event); // { type: 'mousemove', x: 700, y: 400 }
+ioHook.on('mousedown', (event) => {
+    // { button: 1, clicks: 8, x: 1665, y: 1283, type: 'mousedown' }
+    if (event.button === 1){
+        console.log('left click', event)
+        const x = event.x;
+        const y = event.y;
+    }
 });
 
 
