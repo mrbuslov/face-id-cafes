@@ -14,6 +14,7 @@
     "electron": "^11.5.0"
   },
   "dependencies": {
+    "axios": "^1.4.0",
     "electron-screenshot": "^1.0.5",
     "iohook": "^0.9.3",
     "node-abi": "^3.40.0",

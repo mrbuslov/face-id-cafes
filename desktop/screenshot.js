@@ -1,5 +1,6 @@
 // send screenshot to main.js to process it
-document.getElementById('screenshotBtn').addEventListener('click', (e) => {
+document.getElementById('screenshotBtn').addEventListener('click', async (e) => {
+    console.log('Cliiiiiiked!')
     screenshot.send('screenshot', { 'test': true })
 })
 

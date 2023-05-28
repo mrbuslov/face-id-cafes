@@ -13,6 +13,8 @@ const {
 const fs = require('fs');
 // for tracking user clicks - https://wilix-team.github.io/iohook/usage.html#generic-node-application
 const ioHook = require('iohook');
+const axios = require('axios');
+const SERVER = 'http://127.0.0.1:8000/'
 
 // Register and start hook
 ioHook.start();
@@ -83,28 +85,63 @@ const menu = [{
 
 ioHook.on('mousedown', (event) => {
     // { button: 1, clicks: 8, x: 1665, y: 1283, type: 'mousedown' }
-    if (event.button === 1){
-        console.log('left click', event)
+    if (event.button === 1 && event.type == 'mousedown'){
+        // console.log('left click', event)
         const x = event.x;
         const y = event.y;
+        
+        // makeScreenShot();
     }
 });
 
 
 // receive messages from client.js
-ipcMain.on('screenshot', (e, options) => {
-    desktopCapturer.getSources({
-        types: ['screen'], thumbnailSize: {
+ipcMain.on('screenshot', async(e, options) => {
+    // firstly we minimize the window to make a full screen, then we restore it. IDK why we need it. I'll leave it here.
+    // mainWindow.minimize();
+
+
+    const image_data = await makeScreenShotEncoded();
+    axios.post(SERVER + 'screenshot', JSON.stringify({ screenshot: image_data }))
+    .then(response => {
+        // console.log(response.data);
+    })
+    .catch(error => {
+        // console.error(error);
+    });
+
+
+    // mainWindow.webContents.send('screenshot:done')
+    e.sender.send('screenshot:done')
+})
+
+
+async function makeScreenShot() {
+    await desktopCapturer.getSources({
+        types: ['screen'], 
+        thumbnailSize: {
             height: 2160,
             width: 3840
         }
     })
-        .then(sources => {
-            fs.writeFile(`screenshot.png`, sources[0].thumbnail.toPNG(), (err) => {
-                if (err) throw err
-                console.log('Image Saved')
-            })
+    .then(async(sources) => {
+        // mainWindow.restore();
+        await fs.writeFile(`screenshot.png`, sources[0].thumbnail.toPNG(), (err) => {
+            if (err) throw err
+            return `screenshot.png`;
         })
-    // mainWindow.webContents.send('screenshot:done')
-    e.sender.send('screenshot:done')
-})
+        return '';
+    })
+}
+
+async function makeScreenShotEncoded() {
+    let res = await desktopCapturer.getSources({
+        types: ['screen'], 
+        thumbnailSize: {
+            height: 2160,
+            width: 3840
+        }
+    })
+    .then((sources) => sources[0].thumbnail.toPNG().toString('base64'))
+    return res;
+}

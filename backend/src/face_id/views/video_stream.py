@@ -1,10 +1,12 @@
 import asyncio
+import base64
 import json
 import os
 from typing import Set, List
 
 import cv2
 from av import VideoFrame
+import easyocr # https://www.jaided.ai/easyocr/
 
 from aiortc import MediaStreamTrack, RTCPeerConnection, RTCSessionDescription
 from aiortc.contrib.media import MediaRelay, MediaBlackhole
@@ -85,3 +87,17 @@ async def clear_peer_connections(peer_connections: Set[RTCPeerConnection] = pcs)
     coroutines = [pc.close() for pc in peer_connections]
     await asyncio.gather(*coroutines)
     pcs.clear()
+
+
+async def screenshot(request: Request):
+    res = await request.json()
+    
+    base64_code = res.get('screenshot')
+    img_data = base64_code.encode()
+    content = base64.b64decode(img_data)
+
+    reader = easyocr.Reader(['ru', 'en', 'uk'])
+    result = reader.readtext(content, detail=0, paragraph=True)
+    print(' '.join(result))
+
+    return 'ok'
