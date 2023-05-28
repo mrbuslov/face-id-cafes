@@ -467,6 +467,6 @@ $RECYCLE.BIN/
 
 node_modules/
 certs/
-cropped_face.png
+cropped_face.*
 screenshot.png
 tesseract_exefile.exe
